@@ -2,6 +2,9 @@ let MainWraperPosts = document.getElementById("PostsWraper");
 let overlayPost = document.getElementById("overlay");
 let contentPost = document.getElementById("contentPost");
 let CloseIcon = document.getElementById("close");
+let AddPost = document.getElementById("add");
+let overlayAdd = document.getElementById("overlayadd");
+let FormPost = document.getElementById("form-post");
 
 function ajaxPost(url, fnc) {
   let requisit = new XMLHttpRequest();
@@ -44,9 +47,7 @@ function CreatePostDiv(item) {
     console.log(newDeleteUrl);
     fetch(newDeleteUrl, {
       method: "DELETE",
-    })
-    .then((json) => console.log(json));
-
+    }).then((json) => console.log(json));
   });
   CloseIcon.addEventListener("click", function () {
     overlayPost.classList.remove("overlayActive");
@@ -66,3 +67,27 @@ function CreatePostDiv(item) {
   });
   MainWraperPosts.appendChild(divEl);
 }
+
+AddPost.addEventListener("click", function () {
+  overlayAdd.classList.add("activeOverlay");
+});
+
+FormPost.addEventListener("submit", function (e) {
+  e.preventDefault();
+  console.log(this[0].value);
+
+  fetch("https://jsonplaceholder.typicode.com/posts", {
+    method: "POST",
+    body: JSON.stringify({ title: this[0].value, userId: 11 }),
+    headers: {
+      "Content-type": "application/json; charset=UTF-8",
+    },
+  })
+    .then((response) => response.json())
+    .then((json) => {
+      overlayAdd.classList.remove("activeOverlay");
+      this[0].value = " ";
+      CreatePostDiv(json);
+      console.log(json);
+    });
+});
